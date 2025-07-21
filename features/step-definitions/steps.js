@@ -1,5 +1,6 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $, browser } from '@wdio/globals'
+import { handlePopupAccept, enterKeysinMSWORD } from './robotkey';
 
 
 When('I login with username {string} and password {string}', async(userNameTxt, passwordTxt)=>{
@@ -63,15 +64,43 @@ Then('I enter the Email {string} and complete the work',async(emailaddressTxt)=>
 })
 
 Then('I enter the Email {string} and proceed AUTOTEST2 work', async(emailaddressTxt)=>{
+    await browser.pause(1000);
     await $("//button[normalize-space()='Next']").click()
     await $("//input[@name='emailAddress']").waitForDisplayed(3000);
     await $("//input[@name='emailAddress']").setValue(emailaddressTxt);
     await $("//button[normalize-space()='Next']").click();
-    
     await browser.pause(5000);
-
-    var l = await browser.getWindowHandles()
-    console.log("l------------------>" + l );
-    // console.log(await browser.getAlertText());
     
+})
+
+Then('I double click to open the first work item',async()=>{
+    await $("(//span[@class='awd-ba-type-data'][normalize-space()='SAMPLEBA - AUTOTEST2'])[1]").waitForDisplayed(5000);
+    await browser.pause(1000);
+    await $("(//span[@class='awd-ba-type-data'][normalize-space()='SAMPLEBA - AUTOTEST2'])[1]").doubleClick();
+
+
+    // var l = await browser.getWindowHandles()
+    // await console.log("l------------------>" + l );
+    // await browser.switchToWindow(l[0])
+    // await console.log(browser.getTitle());
+
+    // await browser.keys("\ue004")
+    // await browser.pause(1000)
+    // await browser.keys("\ue004")
+    // await browser.pause(1000)
+    // await browser.keys("\uE006")
+    // await browser.pause(1000)
+    // await browser.debug();
+
+    await browser.pause(3000);
+    await handlePopupAccept();
+    await enterKeysinMSWORD();
+})
+
+Then('I accept the pop up in chrome dialog to open MS Word', async()=>{
+    await handlePopupAccept();
+})
+
+Then('I click Next button in the MS Word opened', async()=>{
+    await enterKeysinMSWORD();
 })

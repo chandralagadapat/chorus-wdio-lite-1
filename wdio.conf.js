@@ -55,8 +55,17 @@ export const config = {
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-        browserName: 'chrome'
-    }],
+        browserName: 'chrome',
+            'goog:chromeOptions': {
+                args: [
+                    '--disable-popup-blocking',
+                    '--disable-default-apps',
+                ],
+                prefs: {
+                    'protocol_handler.external': false
+                }
+            }
+        }],
 
     //
     // ===================
