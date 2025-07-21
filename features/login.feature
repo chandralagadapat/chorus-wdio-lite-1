@@ -1,5 +1,12 @@
 Feature: Chorus Application Demo
 
-Scenario: User launch SSC Portal and check the home page
-  Given I launch the Chorus UAT portal
-  When I login with username "AUTOTEST" and password "TestAutomation3!"
+  Scenario Outline: User launch SSC Portal and check the home page
+    Given I launch the Chorus "QA" portal
+    When I login with username "<userName>" and password "<Password>"
+    Then I create a "<Ctype>" from the worklist
+ 
+
+    Examples:
+      | userName | Password         | Ctype |
+     | AUTOTEST | TestAutomation3! | PACLIFE |
+     #| AI4HRM | Password1! | PACLIFE|
