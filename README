@@ -1,4 +1,4 @@
-```sh
+
 ## Getting started
 
 WDIO Automation Framework
@@ -20,5 +20,3 @@ Run all tests:
         npm run test
 Run tests with a specific tag (for Cucumber):
         npm run test '@newba-step2'
-
-```
