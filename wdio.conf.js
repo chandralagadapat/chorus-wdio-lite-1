@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 // Import the module
 import { generate } from 'multiple-cucumber-html-reporter'
 import cucumberJson from 'wdio-cucumberjs-json-reporter';
+import allureReporter from '@wdio/allure-reporter';
 
 export const config = {
     //
@@ -144,6 +145,12 @@ export const config = {
                 jsonFolder: 'reports/json/',
             },
         ],
+        ['allure', {
+        outputDir: 'allure-results',
+        useCucumberStepReporter:true,
+        disableWebdriverStepsReporting: true,
+        disableWebdriverScreenshotsReporting: true
+    }]
     ],
 
     // If you are using Cucumber you need to specify the location of your step definitions.
@@ -274,7 +281,9 @@ export const config = {
      * @param {object}             context          Cucumber World object
      */
     afterStep: async function (step, scenario, result, context) {
-        cucumberJson.attach(await browser.takeScreenshot(), 'image/png');
+        // cucumberJson.attach(await browser.takeScreenshot(), 'image/png');
+        await allureReporter.addAttachment("Failure screenshot", Buffer.from(await browser.takeScreenshot(), 'base64'),"image/png")
+
     },
     /**
      *

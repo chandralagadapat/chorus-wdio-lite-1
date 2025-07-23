@@ -8,5 +8,5 @@ Feature: Chorus Application Demo
 
     Examples:
       | userName | Password         | Ctype |
-     | AUTOTEST | TestAutomation3! | PACLIFE |
+     | AUTOTEST | Passwd@2 | PACLIFE |
      #| AI4HRM | Password1! | PACLIFE|
