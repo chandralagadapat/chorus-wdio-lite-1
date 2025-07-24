@@ -2,7 +2,7 @@
 Feature: Chorus New BA Test
 
   @newba-step1
-  Scenario: User launch SSC Portal and check the home page
+  Scenario: User launch SSC Portal and check the home page 1
     Given I launch the Chorus "QA" portal
     When I login with username "AUTOTEST" and password "Passwd@2"
     And I create a new worklist
@@ -13,7 +13,7 @@ Feature: Chorus New BA Test
     Then I enter the Email "ishwarya.alagesan@ai4process.com" and complete the work
 
   @newba-step2
-  Scenario: User launch SSC Portal and check the home page
+  Scenario: User launch SSC Portal and check the home page 2
     Given I launch the Chorus "QA" portal
     When I login with username "AUTOTEST" and password "Passwd@2"
     And I create a new worklist
@@ -26,7 +26,7 @@ Feature: Chorus New BA Test
     Then I click Next button in the MS Word opened
 
   @newba-step3
-  Scenario: User launch SSC Portal and check the home page
+  Scenario: User launch SSC Portal and check the home page 3
     Given I launch the Chorus "QA" portal
     When I login with username "AUTOTEST" and password "Passwd@2"
     And I double click to open the first work item
