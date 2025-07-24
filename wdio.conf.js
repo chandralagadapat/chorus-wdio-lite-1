@@ -282,7 +282,7 @@ export const config = {
      */
     afterStep: async function (step, scenario, result, context) {
         // cucumberJson.attach(await browser.takeScreenshot(), 'image/png');
-        await allureReporter.addAttachment("Failure screenshot", Buffer.from(await browser.takeScreenshot(), 'base64'),"image/png")
+        await allureReporter.addAttachment("Screenshot", Buffer.from(await browser.takeScreenshot(), 'base64'),"image/png")
 
     },
     /**
