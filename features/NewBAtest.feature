@@ -56,6 +56,8 @@ Feature: Chorus New BA Test
     Then I verify the below content in the EmpDetails2 selected rows table
       | TName111 | 111 | Apr 4, 2004 | true |
 
+      
+
 
   @newba-AUTOTEST4
   Scenario: User creates business flow for AUTOTEST 4 process
@@ -72,4 +74,8 @@ Feature: Chorus New BA Test
     Then I verify the below content in the Emptable1
       | Test333 | 3 | Jan 3, 2024 | true |
 
-
+  @newba-AUTOTEST10
+  Scenario: User creates business flow for AUTOTEST 10 process
+    Given I launch the Chorus "QA" portal
+    When I login with username "AUTOTEST" and password "Passwd@2"
+    Then I select case management 

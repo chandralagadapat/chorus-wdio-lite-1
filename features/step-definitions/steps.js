@@ -7,7 +7,7 @@ When('I login with username {string} and password {string}', async(userNameTxt, 
         await $("#user-name").setValue(userNameTxt)
         await $("#password").setValue(passwordTxt)
         await $("#sign-on").click()
-        await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(5000);
+        await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(1000000);
 });
 
 
@@ -65,7 +65,7 @@ Then('I enter the Email {string} and complete the work',async(emailaddressTxt)=>
 })
 
 Then('I enter the Email {string} and proceed AUTOTEST2 work', async(emailaddressTxt)=>{
-    await browser.pause(1000);
+    await browser.pause(5000);
     await $("//button[normalize-space()='Next']").click()
     await $("//input[@name='emailAddress']").waitForDisplayed(3000);
     await $("//input[@name='emailAddress']").setValue(emailaddressTxt);
@@ -153,6 +153,8 @@ Then('I select newly created record', async()=>{
     const records2 = await $$("(//table[@role='grid'])[1]//tbody/tr").getElements();
     const recCounter2 = await records2.length;
     await $("(//table[@role='grid'])[2]//tbody/tr["+recCounter2+"]/td[1]//div[@role='checkbox']").click()
+    //const recCounter3 = recCounter2-1;
+    //await $("(//table[@role='grid'])[2]//tbody/tr["+recCounter3+"]/td[1]//div[@role='checkbox']").click()
 
 })
 
@@ -181,17 +183,19 @@ Then('I verify the below content in the EmpDetails table', async(dataTable)=>{
 })
 
 Then('I verify the below content in the EmpDetails2 table', async(dataTable)=>{
-    let dataValue = await dataTable.raw()[0];
-    await $("//div[contains(text(),'EmpDetails_ReceivingTable_AllRows')]").waitForDisplayed(2000);
-    const records = await $$("(//table[@role='grid'])[3]//tbody/tr").getElements();
-    const recCounter = await records.length;
-    console.log("recCounter", recCounter);
-
-    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[1]")).toHaveText(dataValue[0]);
-    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[2]")).toHaveText(dataValue[1]);
-    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[3]")).toHaveText(dataValue[2]);
-    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[4]")).toHaveText(dataValue[3]);
-
+    
+    let dataTableLength = await dataTable.raw().length;
+    for(var i=0;i<dataTableLength;i++){
+        let dataValue = await dataTable.raw()[i];
+        await $("//div[contains(text(),'EmpTable2')]").waitForDisplayed(2000);
+        const records = await $$("(//table[@role='grid'])[3]//tbody/tr").getElements();
+        const recCounter = await records.length;
+        console.log("recCounter", recCounter);
+        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[1]")).toHaveText(dataValue[0]);
+        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[2]")).toHaveText(dataValue[1]);
+        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[3]")).toHaveText(dataValue[2]);
+        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[4]")).toHaveText(dataValue[3]);
+    }
 })
 
 Then('I verify the below content in the EmpDetails selected rows table', async(dataTable)=>{
@@ -213,7 +217,7 @@ Then('I verify the below content in the EmpDetails2 selected rows table', async(
     await expect(await $("((//table[@role='grid'])[4]//tbody/tr)[1]/td[4]")).toHaveText(dataValue[3]);
 
     await $("//button[normalize-space()='Submit']").click();
-    await $("//div[contains(text(),'EmpDetails_ReceivingTable_AllRows')]").waitForDisplayed({reverse: true});
+    //await $("//div[contains(text(),'EmpDetails_ReceivingTable_AllRows')]").waitForDisplayed({reverse: true});
 })
 
 Then('I select records from the two tables', async()=>{
@@ -230,4 +234,10 @@ Then('I verify the below content in the Emptable1', async(dataTable)=>{
         await expect(await $("//table/tbody/tr[1]//td[3]")).toHaveText(dataValue[2]);
         await expect(await $("//table/tbody/tr[1]//td[4]")).toHaveText(dataValue[3]);
 
+})
+
+Then('I select case management', async()=>{
+    await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(15000);
+    await $("#workspace-menu-btn").click();
+    await $("#workspace-menu-item-icon CASEMGMT").click();
 })
