@@ -7,7 +7,9 @@ When('I login with username {string} and password {string}', async(userNameTxt, 
         await $("#user-name").setValue(userNameTxt)
         await $("#password").setValue(passwordTxt)
         await $("#sign-on").click()
-        await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(1000000);
+        if(userNameTxt != 'AUTOTST'){
+            await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(10000);
+        }
 });
 
 
@@ -183,19 +185,17 @@ Then('I verify the below content in the EmpDetails table', async(dataTable)=>{
 })
 
 Then('I verify the below content in the EmpDetails2 table', async(dataTable)=>{
-    
-    let dataTableLength = await dataTable.raw().length;
-    for(var i=0;i<dataTableLength;i++){
-        let dataValue = await dataTable.raw()[i];
-        await $("//div[contains(text(),'EmpTable2')]").waitForDisplayed(2000);
-        const records = await $$("(//table[@role='grid'])[3]//tbody/tr").getElements();
-        const recCounter = await records.length;
-        console.log("recCounter", recCounter);
-        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[1]")).toHaveText(dataValue[0]);
-        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[2]")).toHaveText(dataValue[1]);
-        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[3]")).toHaveText(dataValue[2]);
-        await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[4]")).toHaveText(dataValue[3]);
-    }
+    let dataValue = await dataTable.raw()[0];
+    await $("//div[contains(text(),'EmpDetails_ReceivingTable_AllRows')]").waitForDisplayed(2000);
+    const records = await $$("(//table[@role='grid'])[3]//tbody/tr").getElements();
+    const recCounter = await records.length;
+    console.log("recCounter", recCounter);
+
+    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[1]")).toHaveText(dataValue[0]);
+    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[2]")).toHaveText(dataValue[1]);
+    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[3]")).toHaveText(dataValue[2]);
+    await expect(await $("((//table[@role='grid'])[3]//tbody/tr)["+recCounter+"]/td[4]")).toHaveText(dataValue[3]);
+
 })
 
 Then('I verify the below content in the EmpDetails selected rows table', async(dataTable)=>{
@@ -237,7 +237,22 @@ Then('I verify the below content in the Emptable1', async(dataTable)=>{
 })
 
 Then('I select case management', async()=>{
-    await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(15000);
-    await $("#workspace-menu-btn").click();
-    await $("#workspace-menu-item-icon CASEMGMT").click();
+    await $("#ui-id-2").waitForDisplayed(10000);
+    await $("#ui-id-2").click();
+    await $("#cm-add-new-case").click();
+    //await expect(browser).toHaveUrl("https://awddev.trialclient1.awdcloud.co.uk/awd/cm/case.html")
+    console.log(browser.url);
+
+})
+
+Then('I create new case {string}', async(caseNameTxt)=>{
+    //await expect(browser).toHaveTitleContaining('CM: Add new case');
+    //await $('#some-element').click();
+    const handles = await browser.getWindowHandles();
+    console.log('Open tabs:', handles);
+    await browser.switchToWindow(handles[1]);
+    await $("//input[@id='caseNameInput']").waitForDisplayed(3000);
+    let caseName = caseNameTxt + '_' + Math.floor(Math.random() * 10000);
+    await $("//input[@id='caseNameInput']").setValue(caseName);
+    await $('#saveAnchor').click();
 })

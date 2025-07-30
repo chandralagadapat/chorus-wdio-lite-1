@@ -77,5 +77,6 @@ Feature: Chorus New BA Test
   @newba-AUTOTEST10
   Scenario: User creates business flow for AUTOTEST 10 process
     Given I launch the Chorus "QA" portal
-    When I login with username "AUTOTEST" and password "Passwd@2"
+    When I login with username "AUTOTST" and password "Passwd@2"
     Then I select case management 
+    Then I create new case "TESTCASE"
