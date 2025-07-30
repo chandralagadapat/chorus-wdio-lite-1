@@ -94,8 +94,13 @@ Then('I double click to open the first work item',async()=>{
     // await browser.keys("\uE006")
     // await browser.pause(1000)
     // await browser.debug();
-
     await browser.pause(3000);
+    await $("//select[@name='category']").waitForDisplayed(7000);
+    console.log($("//select[@name='category']").getValue());
+    await $("//select[@name='category']").setValue('Test');
+    await $("//button[normalize-space()='Next']").click();
+    await browser.pause(3000);
+    
     await handlePopupAccept();
     await enterKeysinMSWORD();
 })
