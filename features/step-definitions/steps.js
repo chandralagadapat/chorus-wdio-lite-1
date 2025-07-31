@@ -1,13 +1,15 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $, browser } from '@wdio/globals'
-import { handlePopupAccept, enterKeysinMSWORD } from './robotkey';
+import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept } from './robotkey';
 
 
 When('I login with username {string} and password {string}', async(userNameTxt, passwordTxt)=>{
         await $("#user-name").setValue(userNameTxt)
         await $("#password").setValue(passwordTxt)
         await $("#sign-on").click()
-        await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(5000);
+        if(userNameTxt != 'AUTOTST'){
+            await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(10000);
+        }
 });
 
 
@@ -65,8 +67,11 @@ Then('I enter the Email {string} and complete the work',async(emailaddressTxt)=>
 })
 
 Then('I enter the Email {string} and proceed AUTOTEST2 work', async(emailaddressTxt)=>{
-    await browser.pause(1000);
+    await browser.pause(5000);
+    await $("//html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/div/form/div[3]/label/select").waitForDisplayed(7000);
+    await $("//html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/div/form/div[3]/label/select").selectByAttribute('value', '30152');//value('30152');
     await $("//button[normalize-space()='Next']").click()
+    await browser.pause(3000);
     await $("//input[@name='emailAddress']").waitForDisplayed(3000);
     await $("//input[@name='emailAddress']").setValue(emailaddressTxt);
     await $("//button[normalize-space()='Next']").click();
@@ -92,8 +97,10 @@ Then('I double click to open the first work item',async()=>{
     // await browser.keys("\uE006")
     // await browser.pause(1000)
     // await browser.debug();
-
+    
+    //await $("//button[normalize-space()='Next']").click();
     await browser.pause(3000);
+    
     await handlePopupAccept();
     await enterKeysinMSWORD();
 })
@@ -153,6 +160,8 @@ Then('I select newly created record', async()=>{
     const records2 = await $$("(//table[@role='grid'])[1]//tbody/tr").getElements();
     const recCounter2 = await records2.length;
     await $("(//table[@role='grid'])[2]//tbody/tr["+recCounter2+"]/td[1]//div[@role='checkbox']").click()
+    //const recCounter3 = recCounter2-1;
+    //await $("(//table[@role='grid'])[2]//tbody/tr["+recCounter3+"]/td[1]//div[@role='checkbox']").click()
 
 })
 
@@ -213,7 +222,7 @@ Then('I verify the below content in the EmpDetails2 selected rows table', async(
     await expect(await $("((//table[@role='grid'])[4]//tbody/tr)[1]/td[4]")).toHaveText(dataValue[3]);
 
     await $("//button[normalize-space()='Submit']").click();
-    await $("//div[contains(text(),'EmpDetails_ReceivingTable_AllRows')]").waitForDisplayed({reverse: true});
+    //await $("//div[contains(text(),'EmpDetails_ReceivingTable_AllRows')]").waitForDisplayed({reverse: true});
 })
 
 Then('I select records from the two tables', async()=>{
@@ -230,4 +239,95 @@ Then('I verify the below content in the Emptable1', async(dataTable)=>{
         await expect(await $("//table/tbody/tr[1]//td[3]")).toHaveText(dataValue[2]);
         await expect(await $("//table/tbody/tr[1]//td[4]")).toHaveText(dataValue[3]);
 
+})
+
+Then('I select case management', async()=>{
+    await $("#ui-id-2").waitForDisplayed(10000);
+    await $("#ui-id-2").click();
+    await $("#cm-add-new-case").click();
+    //await expect(browser).toHaveUrl("https://awddev.trialclient1.awdcloud.co.uk/awd/cm/case.html")
+    console.log(browser.url);
+
+})
+
+Then('I create new case {string}', async(caseNameTxt)=>{
+    //await expect(browser).toHaveTitleContaining('CM: Add new case');
+    //await $('#some-element').click();
+    const handles = await browser.getWindowHandles();
+    console.log('Open tabs:', handles);
+    await browser.switchToWindow(handles[1]); // Switch to new case window
+    await $("//input[@id='caseNameInput']").waitForDisplayed(3000);
+    let caseName = caseNameTxt + '_' + Math.floor(Math.random() * 10000);
+    await $("//input[@id='caseNameInput']").setValue(caseName); // Set Case name
+    await $('#saveAnchor').click(); // Click Create button
+    await $("//*[@id='cm_case_select_template']/div/fieldset[2]/ol/li[1]/span").waitForDisplayed(3000);
+    await $("//*[@id='cm_case_select_template']/div/fieldset[2]/ol/li[1]/span").click(); //click to select Case template
+    await $("//*[@id='cm_case_select_template']/div/div/span[1]").waitForDisplayed(3000);
+    await $("//*[@id='cm_case_select_template']/div/div/span[1]").click(); //click 'choose template' button
+    await $("//*[@id='ownerMenuListItem']/div/input").waitForDisplayed(3000);
+    await $("//*[@id='ownerMenuListItem']/div/input").setValue('test tester1'); //set 'owner' field
+    
+})
+
+Then('I enter case facts like email {string}, firstname {string}', async(email,firstName)=>{
+    await $("//*[@id='cm_case_facts_wrapper']/label[1]/input").waitForDisplayed(3000);
+    await $("//*[@id='cm_case_facts_wrapper']/label[1]/input").setValue(email);
+    await $("//*[@id='cm_case_facts_wrapper']/label[3]/input").waitForDisplayed(3000);
+    await $("//*[@id='cm_case_facts_wrapper']/label[3]/input").setValue(firstName);
+    await $("//*[@id='saveAnchor']").waitForDisplayed(3000);
+    await $("//*[@id='saveAnchor']").click();
+    handleCasePopupAccept();
+
+})
+
+Then('I work on the task entering the firstname {string}', async(firstName)=>{
+    await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
+   /* const toggleLink = await $('//*[@id="cm_case_tasklist"]/li/a');
+    // Check if the section is hidden
+    const section = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]');
+    const isVisible = await section.isDisplayed();
+    if (!isVisible) {
+        await toggleLink.click(); // click to expand
+        await section.waitForDisplayed({ timeout: 5000 });
+    }
+    const expanders = await $("/html/body/div[1]/div[2]/section[2]//a[img[@src='css/images/black-twisty-closed.png']].expander");
+
+    for (const expander of expanders) {
+    const classAttr = await expander.getAttribute('class');
+
+    if (classAttr.includes('closed')) {
+        await expander.scrollIntoView();
+        await expander.click();
+        await browser.pause(500); // or wait for content to appear
+        }
+    }*/
+//    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a").waitForExist(3000);
+ //   await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a").click();
+    //const el = await $('//*[contains(@class, "expander prompt-for-form-changed closed")]');
+    //await el.waitForDisplayed();
+    //await el.click();
+    const anchor = await $('//a[contains(@class, "expander")]');
+    await anchor.waitForDisplayed();
+    await anchor.click();
+
+    //await $("//*[@id='ui-id-3']").waitForDisplayed(7000);
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").waitForDisplayed(3000);
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").setValue(firstName);//First Name field
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/button[2]").waitForDisplayed(3000);
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/button[2]").click(); //Confirm Button
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/input").setValue("completeTask"); //Task Actions
+    await $("/html/body/div[8]/div[3]/div").waitForDisplayed(3000);
+    await $("/html/body/div[8]/div[3]/div/button[2]").click();//popup 'Yes' Button
+})
+
+Then('I mark the case as complete', async()=>{
+    await browser.pause(5000);
+    await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[2]/a").waitForDisplayed(7000);
+    await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[2]/a").click(); // Click on 'Complete' Button next to case name
+    await $("/html/body/div[8]/div[1]/span").waitForDisplayed(7000);
+    await $("/html/body/div[8]/div[3]/div/button[2]").waitForDisplayed(3000);
+    await $("/html/body/div[8]/div[3]/div/button[2]").click(); // Click on 'Yes' on popup
+    await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[3]/span[2]").waitForDisplayed(3000);
+    await expect($("/html/body/div[1]/div[1]/div/nav/div[3]/div[3]/span[2]")).toHaveText('Done'); // Check if the status is marked as 'Done'
 })

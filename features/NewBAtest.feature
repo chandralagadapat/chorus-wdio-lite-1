@@ -10,7 +10,7 @@ Feature: Chorus New BA Test
       | BusinessArea | WorkType  | Status  |
       | SAMPLEBA     | AUTOTEST1 | CREATED |
     When I double click to open the created work item "AUTOTEST1"
-    Then I enter the Email "ishwarya.alagesan@ai4process.com" and complete the work
+    Then I enter the Email "chandra.lagadapat@ai4process.com" and complete the work
 
   @newba-step2
   Scenario: User launch SSC Portal and check the home page 2
@@ -21,7 +21,7 @@ Feature: Chorus New BA Test
       | BusinessArea | WorkType  | Status  |
       | SAMPLEBA     | AUTOTEST2 | CREATED |
     When I double click to open the created work item "AUTOTEST2"
-    Then I enter the Email "ishwarya.alagesan@ai4process.com" and proceed AUTOTEST2 work
+    Then I enter the Email "chandra.lagadapat@ai4process.com" and proceed AUTOTEST2 work
     And I accept the pop up in chrome dialog to open MS Word
     Then I click Next button in the MS Word opened
 
@@ -56,6 +56,8 @@ Feature: Chorus New BA Test
     Then I verify the below content in the EmpDetails2 selected rows table
       | TName111 | 111 | Apr 4, 2004 | true |
 
+      
+
 
   @newba-AUTOTEST4
   Scenario: User creates business flow for AUTOTEST 4 process
@@ -72,4 +74,12 @@ Feature: Chorus New BA Test
     Then I verify the below content in the Emptable1
       | Test333 | 3 | Jan 3, 2024 | true |
 
-
+  @newba-AUTOTEST10
+  Scenario: User creates business flow for AUTOTEST 10 process
+    Given I launch the Chorus "QA" portal
+    When I login with username "AUTOTST" and password "Passwd@2"
+    Then I select case management 
+    Then I create new case "TESTCASE"
+    Then I enter case facts like email "chandra.lagadapat@ai4process.com", firstname "Chandra"
+    Then I work on the task entering the firstname "Chandra"
+    Then I mark the case as complete

@@ -11,6 +11,16 @@ export async function handlePopupAccept() {
     await robot.keyTap('tab');  // Focus Cancel
     await browser.pause(1000);
     await robot.keyTap('enter'); // Press Cancel
+    
+}
+
+// Function to handle popup Accept
+export async function handleCasePopupAccept() {
+    // Give time for the popup to appear
+    await browser.pause(1000);
+    await browser.pause(1000);
+    await robot.keyTap('enter'); // Press Cancel
+    
 }
 
 export async function enterKeysinMSWORD(){
