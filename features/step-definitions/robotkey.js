@@ -14,6 +14,15 @@ export async function handlePopupAccept() {
     
 }
 
+// Function to handle popup Accept
+export async function handleCasePopupAccept() {
+    // Give time for the popup to appear
+    await browser.pause(1000);
+    await browser.pause(1000);
+    await robot.keyTap('enter'); // Press Cancel
+    
+}
+
 export async function enterKeysinMSWORD(){
     await browser.pause(10000);
     await robot.keyToggle('alt', 'down');
