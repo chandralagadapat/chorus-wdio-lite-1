@@ -281,8 +281,12 @@ Then('I enter case facts like email {string}, firstname {string}', async(email,f
 })
 
 Then('I work on the task entering the firstname {string}', async(firstName)=>{
+    await $("//*[@id='saveAnchor']").waitForDisplayed(3000);
+    await $("//*[@id='saveAnchor']").click();
+    handleCasePopupAccept();
     await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").isFocused(true);
    /* const toggleLink = await $('//*[@id="cm_case_tasklist"]/li/a');
     // Check if the section is hidden
     const section = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]');
@@ -302,14 +306,14 @@ Then('I work on the task entering the firstname {string}', async(firstName)=>{
         await browser.pause(500); // or wait for content to appear
         }
     }*/
-//    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a").waitForExist(3000);
- //   await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a").click();
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a/img").waitForDisplayed(3000);
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a/img").click();
     //const el = await $('//*[contains(@class, "expander prompt-for-form-changed closed")]');
     //await el.waitForDisplayed();
     //await el.click();
-    const anchor = await $('//a[contains(@class, "expander")]');
-    await anchor.waitForDisplayed();
-    await anchor.click();
+    //const anchor = await $('//a[contains(@class, "expander")]');
+    //await anchor.waitForDisplayed();
+    //await anchor.click();
 
     //await $("//*[@id='ui-id-3']").waitForDisplayed(7000);
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").waitForDisplayed(3000);
