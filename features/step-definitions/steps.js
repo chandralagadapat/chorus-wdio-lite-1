@@ -408,7 +408,7 @@ Then('I work on the task entering the firstname {string}', async(firstName)=>{
             const tagName = await browser.execute((el) => el?.tagName?.toLowerCase(), active);
             const classAttr = await active.getAttribute('class');
             console.log('<<------------------------------------>><<-----------------------------------------------------', i , tagName , classAttr);
-            if (tagName === 'a' && classAttr && classAttr.includes('expandar')) {
+            if (tagName === 'a' && classAttr && classAttr.includes('expander')) {
                 console.log('Found <a> with class "expander"');
                 found = true;
                 active.click();
