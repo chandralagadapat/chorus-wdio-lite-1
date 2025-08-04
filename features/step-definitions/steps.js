@@ -1,6 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $, browser } from '@wdio/globals'
-import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept } from './robotkey';
+import robot from "robotjs";
+import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept, handleAnchorTag } from './robotkey';
 
 
 When('I login with username {string} and password {string}', async(userNameTxt, passwordTxt)=>{
@@ -256,7 +257,9 @@ Then('I create new case {string}', async(caseNameTxt)=>{
     const handles = await browser.getWindowHandles();
     console.log('Open tabs:', handles);
     await browser.switchToWindow(handles[1]); // Switch to new case window
-    await $("//input[@id='caseNameInput']").waitForDisplayed(3000);
+    await $("//input[@id='caseNameInput']").waitForDisplayed();
+    browser.pause(10000);
+    await $("//input[@id='caseNameInput']").waitForDisplayed(10000);
     let caseName = caseNameTxt + '_' + Math.floor(Math.random() * 10000);
     await $("//input[@id='caseNameInput']").setValue(caseName); // Set Case name
     await $('#saveAnchor').click(); // Click Create button
@@ -277,52 +280,61 @@ Then('I enter case facts like email {string}, firstname {string}', async(email,f
     await $("//*[@id='saveAnchor']").waitForDisplayed(3000);
     await $("//*[@id='saveAnchor']").click();
     handleCasePopupAccept();
-
+    await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
+    console.log('----------------------------------------------------------------------------------------->>');
+    //handleAnchorTag();
 })
 
 Then('I work on the task entering the firstname {string}', async(firstName)=>{
-    await $("//*[@id='saveAnchor']").waitForDisplayed(3000);
-    await $("//*[@id='saveAnchor']").click();
-    handleCasePopupAccept();
-    await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").isFocused(true);
-   /* const toggleLink = await $('//*[@id="cm_case_tasklist"]/li/a');
-    // Check if the section is hidden
-    const section = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]');
-    const isVisible = await section.isDisplayed();
-    if (!isVisible) {
-        await toggleLink.click(); // click to expand
-        await section.waitForDisplayed({ timeout: 5000 });
+    
+    const form = await $('form'); // or use a more specific form selector
+    const elements = await form.$$('*'); // get all child elements inside the form
+
+    let index = 0;
+    let foundTextarea = false;
+    let textareaEl;
+
+    do {
+    const el = elements[index];
+    const tagName = await el.getTagName();
+    console.log("tagname--->", tagName);
+    if (tagName.toLowerCase() === 'a') {
+        console.log(elements[index].getElement());
+        foundTextarea = true;
+        textareaEl = el;
+        console.log(`Textarea found at index ${index}`);
     }
-    const expanders = await $("/html/body/div[1]/div[2]/section[2]//a[img[@src='css/images/black-twisty-closed.png']].expander");
 
-    for (const expander of expanders) {
-    const classAttr = await expander.getAttribute('class');
+    index++;
+    console.log('<<------------------------------------>><<-----------------------------------------------------');
+    } while (!foundTextarea &&
+         index < elements.length);
 
-    if (classAttr.includes('closed')) {
-        await expander.scrollIntoView();
-        await expander.click();
-        await browser.pause(500); // or wait for content to appear
-        }
-    }*/
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a/img").waitForDisplayed(3000);
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/a/img").click();
-    //const el = await $('//*[contains(@class, "expander prompt-for-form-changed closed")]');
-    //await el.waitForDisplayed();
-    //await el.click();
-    //const anchor = await $('//a[contains(@class, "expander")]');
-    //await anchor.waitForDisplayed();
-    //await anchor.click();
-
-    //await $("//*[@id='ui-id-3']").waitForDisplayed(7000);
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").waitForDisplayed(3000);
+    if (foundTextarea) {
+    await textareaEl.click(); // optionally focus or interact with it
+    } else {
+    console.log('No textarea found inside the form');
+    }
+    console.log('<<------------------------------------>><<-----------------------------------------------------');
+    /*
+    const textarea = await $('/html/body/div[1]/div[2]/section[1]/div/div[1]/div[1]/div[1]/textarea');
+    console.log('-------------------<><><><><><><><>------',textarea);
+    await textarea.waitForDisplayed({ timeout: 20000 });
+    if (await textarea.isDisplayed() && await textarea.isEnabled()) {
+      await textarea.click(); // focus
+    }
+    await textarea.click(); // focus
+    handleAnchorTag();
+    console.log('<<----------------------------------------------------------------------------------------->>');
+    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").waitForDisplayed(10000);
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").setValue(firstName);//First Name field
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/button[2]").waitForDisplayed(3000);
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/button[2]").click(); //Confirm Button
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/input").setValue("completeTask"); //Task Actions
     await $("/html/body/div[8]/div[3]/div").waitForDisplayed(3000);
     await $("/html/body/div[8]/div[3]/div/button[2]").click();//popup 'Yes' Button
+    */
 })
 
 Then('I mark the case as complete', async()=>{

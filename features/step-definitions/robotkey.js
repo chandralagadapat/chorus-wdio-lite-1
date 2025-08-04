@@ -23,6 +23,28 @@ export async function handleCasePopupAccept() {
     
 }
 
+// Function to handle task anchor tag
+export async function handleAnchorTag() {
+    // Give time for the Anchor to appear
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('tab');  // Focus Cancel
+    await browser.pause(10000);
+    await robot.keyTap('enter'); // Press Cancel
+    //await robot.dragMouse
+    
+}
 export async function enterKeysinMSWORD(){
     await browser.pause(10000);
     await robot.keyToggle('alt', 'down');
