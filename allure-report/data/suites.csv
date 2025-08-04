@@ -1,3 +1,4 @@
 "DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
-"","36482","User creates business flow for AUTOTEST 10 process","","Fri Aug 01 17:58:57 IST 2025","broken","Fri Aug 01 17:59:33 IST 2025","","Chorus New BA Test","",""
 "","50165","User launch SSC Portal and check the home page 2","","Thu Jul 31 14:48:25 IST 2025","passed","Thu Jul 31 14:49:15 IST 2025","","Chorus New BA Test","",""
+"","26413","User creates business flow for AUTOTEST 10 process","","Sat Aug 02 10:27:51 IST 2025","broken","Sat Aug 02 10:28:17 IST 2025","","Chorus New BA Test","",""
+"","16456","User creates business flow for AUTOTEST 10 process","","Mon Aug 04 15:02:20 IST 2025","broken","Mon Aug 04 15:02:36 IST 2025","","Chorus New BA Test","",""
