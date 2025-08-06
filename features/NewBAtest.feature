@@ -52,7 +52,7 @@ Feature: Chorus New BA Test
     Then I verify the below content in the EmpDetails2 table
       | TName111 | 111 | Apr 4, 2004 | true |
     Then I verify the below content in the EmpDetails selected rows table
-      | TName11 | 11 | 2004-03-03 | false |
+      | TName11 | 11 | 2004-03-03 |  |
     Then I verify the below content in the EmpDetails2 selected rows table
       | TName111 | 111 | Apr 4, 2004 | true |
 
@@ -91,3 +91,22 @@ Feature: Chorus New BA Test
     Then I select existing case
     Then I work on the task entering the firstname "Chandra"
     Then I mark the case as complete
+
+
+  @newba-AUTOTEST9
+  Scenario: User launch SSC Portal and check the home page 2
+    Given I launch the Chorus "QA" portal
+    When I login with username "AUTOTEST" and password "Passwd@2"
+    And I create a new worklist
+    Then I select following options in the new worklist
+      | BusinessArea | WorkType  | Status  |
+      | SAMPLEBA     | AUTOTEST9 | CREATED |
+    When I double click to open the created work item "AUTOTEST9"
+    Then I enter the firstname "chandra"
+    When I double click to open the created work item "AUTOTEST9"
+    Then I click on the lock button
+    Then I enter the Email "chandra.lagadapat@ai4process.com" and proceed AUTOTEST2 work
+    And I accept the pop up in chrome dialog to open MS Word
+    Then I click Next button in the MS Word opened with abort button
+    Then I wait for few seconds
+    Then I select "Yes" for reminder needed

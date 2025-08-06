@@ -1,7 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $, browser } from '@wdio/globals'
 import robot from "robotjs";
-import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept, handleCasePopupClear } from './robotkey';
+import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept, enterKeysinMSWORDwithAbort } from './robotkey';
 
 
 When('I login with username {string} and password {string}', async(userNameTxt, passwordTxt)=>{
@@ -511,4 +511,32 @@ Then('I select existing case', async()=>{
     const handles = await browser.getWindowHandles();
     console.log('Open tabs:', handles);
     await browser.switchToWindow(handles[1]);
+})
+
+Then('I enter the firstname {string}', async(firstName)=>{
+  await browser.pause(5000);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/label[4]/input').waitForDisplayed(3000);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/label[4]/input').setValue(firstName);//Enter First name in the field
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/button[2]').waitForDisplayed(2000);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/button[2]').click();//click 'Nextstep Button'
+
+})
+
+Then('I click on the lock button', async()=>{
+  await browser.pause(5000);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[1]/div/div[1]/div[3]/div[2]/app-awd-item-lock/button').waitForDisplayed(1000);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[1]/div/div[1]/div[3]/div[2]/app-awd-item-lock/button').click();
+})
+
+Then('I click Next button in the MS Word opened with abort button', async()=>{
+    await enterKeysinMSWORDwithAbort();
+})
+
+Then('I select {string} for reminder needed', async(reminder)=>{
+  await browser.pause(2000);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/label/select').waitForDisplayed(500);
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/label/select').click();
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/label/select/option[9]').click();
+  await $('/html/body/app-root/div/div[2]/div[2]/app-active-cards-container/div/app-awd-item-card/app-card/div/popout-window/div/div/div/div[2]/div/div[1]/div/div[1]/form/div/button[1]').click();
+
 })

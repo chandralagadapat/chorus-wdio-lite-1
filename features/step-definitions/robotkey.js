@@ -66,3 +66,16 @@ export async function enterKeysinMSWORD(){
     await browser.pause(1000);
     await robot.keyTap('2'); 
 }
+
+export async function enterKeysinMSWORDwithAbort(){
+    await browser.pause(10000);
+    await robot.keyToggle('alt', 'down');
+    await robot.keyTap('y');
+    await robot.keyToggle('alt', 'up');
+    await browser.pause(1000);
+    await robot.keyTap('2'); 
+    await browser.pause(1000);
+    await robot.keyTap('Y'); 
+    await browser.pause(1000);
+    await robot.keyTap('3'); 
+}
