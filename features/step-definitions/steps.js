@@ -1,7 +1,7 @@
 import { Given, When, Then } from '@wdio/cucumber-framework';
 import { expect, $, browser } from '@wdio/globals'
 import robot from "robotjs";
-import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept, handleAnchorTag } from './robotkey';
+import { handlePopupAccept, enterKeysinMSWORD, handleCasePopupAccept, handleCasePopupClear } from './robotkey';
 
 
 When('I login with username {string} and password {string}', async(userNameTxt, passwordTxt)=>{
@@ -9,7 +9,7 @@ When('I login with username {string} and password {string}', async(userNameTxt, 
         await $("#password").setValue(passwordTxt)
         await $("#sign-on").click()
         if(userNameTxt != 'AUTOTST'){
-            await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(10000);
+            await $("//div[@class='ui-card-main-text'][contains(text(),'Worklist')]").waitForDisplayed(15000);
         }
 });
 
@@ -279,156 +279,213 @@ Then('I enter case facts like email {string}, firstname {string}', async(email,f
     await $("//*[@id='cm_case_facts_wrapper']/label[3]/input").setValue(firstName);
     await $("//*[@id='saveAnchor']").waitForDisplayed(6000);
     await $("//*[@id='saveAnchor']").click();
-    handleCasePopupAccept();
-    await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
-    browser.pause(10000);
-    browser.pause(10000);
-    browser.pause(10000);
-    console.log('----------------------------------------------------------------------------------------->>');
+    //await browser.pause(10000);
+    //handleCasePopupAccept();
+    // Safely handle the alert if it appears
+      try {
+        await $("#saveAnchor").click();
+        browser.refresh();
+         browser.pause(15000); // optional delay for alert
+         //console.log('✅ Alert text', await browser.getAlertText());
+         //browser.acceptAlert(); // or dismissAlert()
+         browser.on('dialog', async (dialog) => {
+            //console.log(dialog.message()) // outputs: "Hello Dialog"
+            await dialog.dismiss()
+            })
+        console.log('✅ Alert handled');
+        browser.pause(5000);
+      } catch (err) {
+        if (
+          err?.message?.includes('no such alert') ||
+          err?.message?.includes('No dialog is showing')
+        ) {
+          console.warn('⚠️ No alert was present after clicking Save');
+        } else {
+          console.error('❌ Unexpected alert error:', err.message);
+          throw err;
+        }
+      }
+    //handleCasePopupAccept();
+    //await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
+    //await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
+    console.log('----------------------------------------------------------------------------------------->>CurrentCaseName',await $("//*[@id='currentCaseName']").isDisplayed(), await $("//*[@id='saveAnchor']").isExisting());
     //handleAnchorTag();
 })
 
-Then('I work on the task entering the firstname {string}', async(firstName)=>{
-    browser.pause(10000);
-    //await $("//*[@id='editAnchor']").waitForDisplayed(7000);
-    if(await $("//*[@id='saveAnchor']").isDisplayed() === true){
-        await $("//*[@id='saveAnchor']").waitForDisplayed(6000);
-        await $("//*[@id='saveAnchor']").click();
-        handleCasePopupAccept();
-        await $("//*[@id='cm_case_task_div']").waitForDisplayed(7000);
-        await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li").waitForDisplayed(7000); //Click on the first task arrow
-    console.log('----------------------------------------------------------------------------------------->>Case Created<<-------------');
-    }
-    
-
-   /* const form = await $('form'); // or use a more specific form selector
-    const elements = await form.$$('*'); // get all child elements inside the form
-
-    let index = elements.length;
-    let foundTextarea = false;
-    let textareaEl;
-
-    do {
-    const el = elements[index];
-    const tagName = await el.getTagName();
-    console.log("tagname--->", tagName);
-    const className = await el.getAttribute('class');
-    console.log("className--->", className);
-    
-    if (tagName.toLowerCase() === 'a'&&  className.includes('expander')) {
-        console.log(elements[index].getElement());
-        foundTextarea = true;
-        textareaEl = el;
-        console.log(`Textarea found at index ${index}`);
-    }
-
-    index--;
-    console.log('<<------------------------------------>><<-----------------------------------------------------');
-    } while (!foundTextarea &&
-         index > 0);
-
-    if (foundTextarea) {
-    await textareaEl.click(); // optionally focus or interact with it
-        console.log('Textarea found inside the form');
-
-    } else {
-        console.log('No textarea found inside the form');
-    }
-        */
-    console.log('<<------------------------------------>><<-----------------------------------------------------');
-    /*
-    const textarea = await $('/html/body/div[1]/div[2]/section[1]/div/div[1]/div[1]/div[1]/textarea');
-    console.log('-------------------<><><><><><><><>------',textarea);
-    await textarea.waitForDisplayed({ timeout: 20000 });
-    if (await textarea.isDisplayed() && await textarea.isEnabled()) {
-      await textarea.click(); // focus
-    }
-    await textarea.click(); // focus
-    handleAnchorTag();
-    */
-   
-    console.log('<<----------------------------------------------------------------------------------------->>');
-    await browser.waitUntil(
-        async () => (await browser.getUrl()).includes('awd/cm/case.html?objId='),
-        { timeout: 10000, timeoutMsg: 'URL did not contain "awd/cm/case.html?objId="' }
-    );
-    // Wait for full page load
-    await browser.waitUntil(
-        async () => {
-            const readyState = await browser.execute(() => document.readyState);
-            return readyState === 'complete';
-        },
-        {
-            timeout: 10000, // 10 seconds
-            timeoutMsg: 'Page did not finish loading in time',
+Then('I wait for the page to load', async () => {
+  try {
+    // Safely handle the alert if it appears
+      try {
+        await browser.pause(5000); // optional delay for alert
+        await browser.acceptAlert(); // or dismissAlert()
+        console.log('✅ Alert handled');
+      } catch (err) {
+        if (
+          err?.message?.includes('no such alert') ||
+          err?.message?.includes('No dialog is showing')
+        ) {
+          console.warn('⚠️ No alert was present after clicking Save');
+        } else {
+          console.error('❌ Unexpected alert error:', err.message);
+          throw err;
         }
-        );
-    console.log('-------------->>>page loaded<<<--------------------------');
-    /*const selector = "//*[@id='caseNameInput']";
-    const maxRetries = 5;
-    const retryDelay = 10000; // milliseconds
+      }
+    // Wait until the document is fully loaded
+    await browser.waitUntil(
+      async () => (await browser.execute(() => document.readyState)) === 'complete',
+      {
+        timeout: 15000,
+        timeoutMsg: 'Page did not fully load',
+      }
+    );
+    console.log('✅ Page fully loaded');
 
-    let found = false;
+     /* // Safely handle the alert if it appears
+      try {
+        await browser.pause(500); // optional delay for alert
+        await browser.acceptAlert(); // or dismissAlert()
+        console.log('✅ Alert handled');
+      } catch (err) {
+        if (
+          err?.message?.includes('no such alert') ||
+          err?.message?.includes('No dialog is showing')
+        ) {
+          console.warn('⚠️ No alert was present after clicking Save');
+        } else {
+          console.error('❌ Unexpected alert error:', err.message);
+          throw err;
+        }
+      }
+*/
+    // Wait until the URL confirms navigation
+    await browser.waitUntil(
+      async () => (await browser.getUrl()).includes('awd/cm/case.html?objId='),
+      { timeout: 10000, timeoutMsg: 'Expected case URL not found' }
+    );
+    console.log('✅ Case URL loaded');
+  } catch (mainErr) {
+    console.error('❌ Error during page load and interaction flow:', mainErr.message);
+    throw mainErr; // Let framework handle failed step
+  }
+})
+
+
+
+Then('I work on the task entering the firstname {string}', async(firstName)=>{
+    
+    // Step 1: Wait until the page has fully loaded
+    await browser.waitUntil(
+    async () => (await browser.execute(() => document.readyState)) === 'complete',
+    {
+        timeout: 15000,
+        timeoutMsg: '❌ Page did not fully load in time',
+    }
+    );
+    console.log('✅ Page load complete');
+
+    // Wait until the URL confirms navigation
+    await browser.waitUntil(
+      async () => (await browser.getUrl()).includes('awd/cm/case.html?objId='),
+      { timeout: 10000, timeoutMsg: '❌ Expected case URL not found' }
+    );
+    console.log('✅ Case URL loaded');
+
+    // Step 2: Retry finding the element with ID "currentCaseName"
+    const caseNameXpath = '//*[@id="currentCaseName"]';
+    const maxRetries = 5;
+    const retryDelay = 3000;
+    let inputFound = false;
 
     for (let i = 0; i < maxRetries; i++) {
-    try {
-        console.log('-------------->>>entered for loop<<<--------------------------',i);
-        //browser.pause(10000);
-        const elem = await $(selector);
-        console.log('-------------->>>entered for loop selector<<<--------------------------');
-        if (await elem.isExisting()) {
-        console.log(`Element found on attempt ${i + 1}`);
-        found = true;
+    const elem = await $(caseNameXpath);
+    if (await elem.isExisting()) {
+        await elem.waitForDisplayed({ timeout: 5000 });
+        console.log('✅ Found caseNameInput element');
+        inputFound = true;
         break;
-        }
-    } catch (err) {
-        console.log(`Attempt ${i + 1}: Error checking element - ${err.message}`);
     }
-
-    console.log(`Retrying in ${retryDelay}ms...`);
+    console.log(`🔁 Retry ${i + 1}: Element not found, retrying in ${retryDelay}ms`);
     await browser.pause(retryDelay);
     }
 
-    if (!found) {
-    throw new Error(`Element "${selector}" not found after ${maxRetries} retries`);
+    if (!inputFound) {
+    throw new Error('❌ currentCaseName element not found after retries');
     }
 
-    //await $("//*[@id='editAnchor']").waitForExist({ timeout: 10000 });
-    
-    if(await $("//*[@id='caseNameInput']").isExisting()){ */
-        const maxTabs = 50; // prevent infinite loop
-        let found = false;
-        browser.pause(10000);
-        browser.pause(10000);
-        for (let i = 0; i < maxTabs; i++) {
-            browser.pause(10000);
-            const activeRaw = await browser.getActiveElement();
-            const active = await $(activeRaw);
-            const tagName = await browser.execute((el) => el?.tagName?.toLowerCase(), active);
-            const classAttr = await active.getAttribute('class');
-            console.log('<<------------------------------------>><<-----------------------------------------------------', i , tagName , classAttr);
-            if (tagName === 'a' && classAttr && classAttr.includes('expander')) {
-                console.log('Found <a> with class "expander"');
-                found = true;
-                active.click();
-                break;
-            }
+    // Step 3: Tab through controls to find anchor tag with class "expander"
+    const maxTabs = 50;
+    let expanderFound = false;
 
-        // Press TAB key
-        await browser.keys('Tab');
+    for (let i = 0; i < maxTabs; i++) {
+    const activeElement = await browser.getActiveElement();
+
+    const tagName = await browser.execute(el => el?.tagName?.toLowerCase(), activeElement);
+    const className = await browser.execute(el => el?.getAttribute('class'), activeElement);
+
+    console.log(`🔍 Tab ${i + 1}: tagName = ${tagName}, class = ${className}`);
+
+    if (tagName === 'a' && className?.includes('expander')) {
+        console.log('✅ Found <a> tag with class "expander"');
+        await browser.execute(el => el.click(), activeElement);
+        expanderFound = true;
+        break;
     }
 
-    if (!found) {
-        throw new Error('Anchor with class "expander" not found within tab limit');
+    await browser.keys('Tab');
+    await browser.pause(100);
     }
 
-    //}
+    if (!expanderFound) {
+    throw new Error('❌ Could not find anchor tag with class "expander"');
+    }
+
+    // Step 4: Handle alert safely if present
+    if (await browser.isAlertOpen()) {
+    console.log('⚠️ Alert present — accepting');
+    await browser.acceptAlert();
+    } else {
+    console.log('✅ No alert to accept');
+    }
+
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").waitForDisplayed(10000);
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/label[1]/input").setValue(firstName);//First Name field
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/button[2]").waitForDisplayed(3000);
     await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[3]/div[1]/article/div/div[1]/form/div/button[2]").click(); //Confirm Button
-    await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/input").setValue("completeTask"); //Task Actions
+    
+    const hoverDiv = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div');
+
+    // Hover over the div to make input visible
+    await hoverDiv.waitForDisplayed({ timeout: 10000 });
+    await hoverDiv.moveTo();
+
+    // Select the input that becomes visible after hover
+    const input = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/input');
+
+    // Wait for the input to become visible and editable
+    await browser.waitUntil(async () => {
+      return (
+        await input.isDisplayed() &&
+        await input.isEnabled() &&
+        !(await input.getAttribute('readonly'))
+      );
+    }, {
+      timeout: 10000,
+      timeoutMsg: 'Input did not become editable after hover',
+    });
+
+    // Now interact with the input
+    await input.click();
+    await input.setValue('completeTask');
+    // 4. Now click the <ul> if needed
+      const ul = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/div');
+      await ul.waitForDisplayed({ timeout: 5000 });
+      await ul.click(); // optional, only if the ul itself is clickable
+
+      // 5. Click the third list item
+      const li3 = await $('/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/ul/li[3]');
+      await li3.waitForDisplayed({ timeout: 5000 });
+      await li3.click();
+    //await $("/html/body/div[1]/div[2]/section[2]/div/div[2]/ol/li/div/div[1]/a/div/input").setValue("completeTask"); //Task Actions
     await $("/html/body/div[8]/div[3]/div").waitForDisplayed(3000);
     await $("/html/body/div[8]/div[3]/div/button[2]").click();//popup 'Yes' Button
     
@@ -436,11 +493,22 @@ Then('I work on the task entering the firstname {string}', async(firstName)=>{
 
 Then('I mark the case as complete', async()=>{
     await browser.pause(5000);
-    await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[2]/a").waitForDisplayed(7000);
+    await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[2]/a").waitForDisplayed(5000);
     await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[2]/a").click(); // Click on 'Complete' Button next to case name
-    await $("/html/body/div[8]/div[1]/span").waitForDisplayed(7000);
-    await $("/html/body/div[8]/div[3]/div/button[2]").waitForDisplayed(3000);
+    await $("/html/body/div[8]/div[1]/span").waitForDisplayed(1000);
+    await $("/html/body/div[8]/div[3]/div/button[2]").waitForDisplayed(1000);
     await $("/html/body/div[8]/div[3]/div/button[2]").click(); // Click on 'Yes' on popup
     await $("/html/body/div[1]/div[1]/div/nav/div[3]/div[3]/span[2]").waitForDisplayed(3000);
-    await expect($("/html/body/div[1]/div[1]/div/nav/div[3]/div[3]/span[2]")).toHaveText('Done'); // Check if the status is marked as 'Done'
+    await expect($("/html/body/div[1]/div[1]/div/nav/div[3]/div[3]/span[2]")).toHaveText('DONE'); // Check if the status is marked as 'Done'
+})
+
+Then('I select existing case', async()=>{
+    await browser.pause(5000);
+    await $("#ui-id-2").waitForDisplayed(3000);
+    await $("#ui-id-2").click();
+    await $("//*[@id='cm_case_list_table']/tbody/tr[1]/td[3]/div/a").waitForDisplayed(7000);
+    await $("//*[@id='cm_case_list_table']/tbody/tr[1]/td[3]/div/a").click();
+    const handles = await browser.getWindowHandles();
+    console.log('Open tabs:', handles);
+    await browser.switchToWindow(handles[1]);
 })

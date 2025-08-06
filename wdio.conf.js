@@ -57,6 +57,9 @@ export const config = {
     //
     capabilities: [{
         browserName: 'chrome',
+            'wdio:devtoolsOptions': {
+                headless: false // optional: run with UI for easier debugging
+            },
             'goog:chromeOptions': {
                 args: [
                     '--disable-popup-blocking',

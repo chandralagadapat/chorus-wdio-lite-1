@@ -23,6 +23,15 @@ export async function handleCasePopupAccept() {
     
 }
 
+export async function handleCasePopupClear() {
+  if (await browser.isAlertOpen()) {
+    await browser.acceptAlert();
+    console.log('✅ Alert accepted');
+  } else {
+    console.log('ℹ️ No alert to accept');
+  }
+}
+
 // Function to handle task anchor tag
 export async function handleAnchorTag() {
     // Give time for the Anchor to appear
