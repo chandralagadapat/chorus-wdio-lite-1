@@ -16,6 +16,10 @@ When('I login with username {string} and password {string}', async(userNameTxt, 
 
 When('I launch the Chorus {string} portal', async(envVariable)=>{
     await browser.maximizeWindow();
+    await browser.execute(() => {
+      document.body.style.transform = "scale(0.8)";
+      document.body.style.transformOrigin = "0 0";
+    });
     if(envVariable.toUpperCase()=="UAT"){
         await browser.url("https://awddev.trialclient1.awdcloud.co.uk/awd/portal/login.html")
     } else if(envVariable.toUpperCase()=="QA") {
@@ -85,21 +89,6 @@ Then('I double click to open the first work item',async()=>{
     await browser.pause(1000);
     await $("(//span[@class='awd-ba-type-data'][normalize-space()='SAMPLEBA - AUTOTEST2'])[1]").doubleClick();
 
-
-    // var l = await browser.getWindowHandles()
-    // await console.log("l------------------>" + l );
-    // await browser.switchToWindow(l[0])
-    // await console.log(browser.getTitle());
-
-    // await browser.keys("\ue004")
-    // await browser.pause(1000)
-    // await browser.keys("\ue004")
-    // await browser.pause(1000)
-    // await browser.keys("\uE006")
-    // await browser.pause(1000)
-    // await browser.debug();
-    
-    //await $("//button[normalize-space()='Next']").click();
     await browser.pause(3000);
     
     await handlePopupAccept();
