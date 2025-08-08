@@ -55,7 +55,7 @@ export async function handleAnchorTag() {
     
 }
 export async function enterKeysinMSWORD(){
-    await browser.pause(10000);
+    await browser.pause(5000);
     await robot.keyToggle('alt', 'down');
     await robot.keyTap('y');
     await robot.keyToggle('alt', 'up');
@@ -68,7 +68,7 @@ export async function enterKeysinMSWORD(){
 }
 
 export async function enterKeysinMSWORDwithAbort(){
-    await browser.pause(10000);
+    await browser.pause(5000);
     await robot.keyToggle('alt', 'down');
     await robot.keyTap('y');
     await robot.keyToggle('alt', 'up');
