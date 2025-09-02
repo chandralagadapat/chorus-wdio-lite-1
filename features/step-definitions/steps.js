@@ -445,6 +445,7 @@ Then('I work on the task entering the firstname {string}', async(firstName)=>{
 
     // Hover over the div to make input visible
     await hoverDiv.waitForDisplayed({ timeout: 10000 });
+    console.log('✅ Hover');
     await hoverDiv.moveTo();
 
     // Select the input that becomes visible after hover
