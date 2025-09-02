@@ -77,7 +77,7 @@ Feature: Chorus New BA Test
   @newba-AUTOTEST10
   Scenario: User creates business flow for AUTOTEST 10 process
     Given I launch the Chorus "QA" portal
-    When I login with username "AUTOTST" and password "Passwd@2"
+    When I login with username "AUTOTST" and password "Passwd@3"
     Then I select case management 
     Then I create new case "TESTCASE"
     Then I enter case facts like email "chandra.lagadapat@ai4process.com", firstname "Chandra"
@@ -87,7 +87,7 @@ Feature: Chorus New BA Test
   @newba-AUTOTEST10E
   Scenario: User creates business flow for AUTOTEST 10 case
     Given I launch the Chorus "QA" portal
-    When I login with username "AUTOTST" and password "Passwd@2"
+    When I login with username "AUTOTST" and password "Passwd@3"
     Then I select existing case
     Then I work on the task entering the firstname "Chandra"
     Then I mark the case as complete
